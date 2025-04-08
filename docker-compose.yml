@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    image: chltmdgh522/flowfit:latest
+    image: chltmdgh522/stdev:latest
     ports:
       - "8080:8080"
     environment:
