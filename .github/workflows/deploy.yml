@@ -89,7 +89,8 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             cd /home/ubuntu/flowfit
-            docker-compose down || true
+            sudo ln -s /usr/bin/docker-compose /usr/local/bin/docker-compose || true  # 심볼릭 링크 생성 (이미 있으면 무시)
+            docker compose down || true  # 기존 컨테이너 종료 (V2 스타일)
             docker image prune -a -f
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO_NAME }}:latest
-            docker-compose up -d
+            docker compose up -d  # V2 스타일로 컨테이너 실행
