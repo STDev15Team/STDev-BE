@@ -1,6 +1,6 @@
 package stdev.domain.oauth2.presentation.controller;
 
-import flowfit.domain.oauth2.application.service.KakaoLoginService;
+import stdev.domain.oauth2.application.service.KakaoLoginService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

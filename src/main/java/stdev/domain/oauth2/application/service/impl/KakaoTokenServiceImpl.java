@@ -1,10 +1,10 @@
 package stdev.domain.oauth2.application.service.impl;
 
-import flowfit.domain.oauth2.application.service.KakaoAccessTokenAndRefreshTokenService;
-import flowfit.domain.oauth2.application.service.KakaoTokenService;
-import flowfit.domain.oauth2.presentation.dto.response.OAuth2TokenResponse;
-import flowfit.global.jwt.domain.entity.KakaoJsonWebToken;
-import flowfit.global.jwt.domain.repository.KakaoJsonWebTokenRepository;
+import stdev.domain.oauth2.application.service.KakaoAccessTokenAndRefreshTokenService;
+import stdev.domain.oauth2.application.service.KakaoTokenService;
+import stdev.domain.oauth2.presentation.dto.response.OAuth2TokenResponse;
+import stdev.global.jwt.domain.entity.KakaoJsonWebToken;
+import stdev.global.jwt.domain.repository.KakaoJsonWebTokenRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

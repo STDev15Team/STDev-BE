@@ -1,12 +1,12 @@
 package stdev.domain.oauth2.application.service.impl;
 
-import flowfit.domain.oauth2.application.service.ReissueService;
-import flowfit.domain.oauth2.infra.exception.InvalidRefreshTokenException;
-import flowfit.domain.oauth2.infra.exception.RefreshTokenNotExistException;
-import flowfit.domain.user.domain.entity.Role;
-import flowfit.global.jwt.domain.entity.JsonWebToken;
-import flowfit.global.jwt.domain.repository.JsonWebTokenRepository;
-import flowfit.global.jwt.util.JWTUtil;
+import stdev.domain.oauth2.application.service.ReissueService;
+import stdev.domain.oauth2.infra.exception.InvalidRefreshTokenException;
+import stdev.domain.oauth2.infra.exception.RefreshTokenNotExistException;
+import stdev.domain.user.domain.entity.Role;
+import stdev.global.jwt.domain.entity.JsonWebToken;
+import stdev.global.jwt.domain.repository.JsonWebTokenRepository;
+import stdev.global.jwt.util.JWTUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;

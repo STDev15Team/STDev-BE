@@ -1,6 +1,6 @@
 package stdev.global.infra.exception.connection;
 
-import flowfit.global.infra.exception.FlowfitException;
+import stdev.global.infra.exception.FlowfitException;
 import org.springframework.http.HttpStatus;
 
 public class FlowfitDBConnectionException extends FlowfitException {

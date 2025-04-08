@@ -1,8 +1,8 @@
 package stdev.domain.oauth2.application.service.impl;
 
-import flowfit.domain.oauth2.application.service.KakaoUserService;
-import flowfit.domain.oauth2.presentation.dto.response.OAuth2UserResponse;
-import flowfit.global.infra.feignclient.KakaoOAuth2UserFeignClient;
+import stdev.domain.oauth2.application.service.KakaoUserService;
+import stdev.domain.oauth2.presentation.dto.response.OAuth2UserResponse;
+import stdev.global.infra.feignclient.KakaoOAuth2UserFeignClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 package stdev.domain.user.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import flowfit.domain.user.infra.exception.InvalidRoleException;
+import stdev.domain.user.infra.exception.InvalidRoleException;
 import lombok.Getter;
 
 import java.util.Arrays;

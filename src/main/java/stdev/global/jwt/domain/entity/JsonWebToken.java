@@ -1,6 +1,6 @@
 package stdev.global.jwt.domain.entity;
 
-import flowfit.domain.user.domain.entity.Role;
+import stdev.domain.user.domain.entity.Role;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;

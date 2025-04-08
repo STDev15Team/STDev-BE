@@ -1,9 +1,9 @@
 package stdev.global.jwt.util;
 
 
-import flowfit.domain.user.domain.entity.Role;
-import flowfit.global.jwt.util.exception.FlowfitJWTException;
-import flowfit.global.jwt.util.exception.FlowfitJWTExpiredException;
+import stdev.domain.user.domain.entity.Role;
+import stdev.global.jwt.util.exception.FlowfitJWTException;
+import stdev.global.jwt.util.exception.FlowfitJWTExpiredException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;

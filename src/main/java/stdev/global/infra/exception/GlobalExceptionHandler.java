@@ -1,8 +1,8 @@
 package stdev.global.infra.exception;
 
 
-import flowfit.domain.user.infra.exception.UserNotFoundException;
-import flowfit.global.infra.exception.auth.FlowfitAuthException;
+import stdev.domain.user.infra.exception.UserNotFoundException;
+import stdev.global.infra.exception.auth.FlowfitAuthException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

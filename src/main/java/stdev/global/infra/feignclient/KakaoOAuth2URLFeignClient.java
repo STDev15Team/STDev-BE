@@ -1,6 +1,6 @@
 package stdev.global.infra.feignclient;
 
-import flowfit.domain.oauth2.presentation.dto.response.OAuth2TokenResponse;
+import stdev.domain.oauth2.presentation.dto.response.OAuth2TokenResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;

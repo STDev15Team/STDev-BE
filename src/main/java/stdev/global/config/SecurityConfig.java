@@ -2,12 +2,12 @@ package stdev.global.config;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import flowfit.domain.oauth2.infra.filter.FlowfitJWTFilter;
-import flowfit.domain.oauth2.infra.filter.FlowfitLogoutFilter;
-import flowfit.global.infra.exception.auth.FlowfitAuthExceptionFilter;
-import flowfit.global.jwt.domain.repository.JsonWebTokenRepository;
-import flowfit.global.jwt.domain.repository.KakaoJsonWebTokenRepository;
-import flowfit.global.jwt.util.JWTUtil;
+import stdev.domain.oauth2.infra.filter.FlowfitJWTFilter;
+import stdev.domain.oauth2.infra.filter.FlowfitLogoutFilter;
+import stdev.global.infra.exception.auth.FlowfitAuthExceptionFilter;
+import stdev.global.jwt.domain.repository.JsonWebTokenRepository;
+import stdev.global.jwt.domain.repository.KakaoJsonWebTokenRepository;
+import stdev.global.jwt.util.JWTUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -37,7 +37,7 @@ public class SecurityConfig {
     private final ObjectMapper objectMapper;
     private final JsonWebTokenRepository jsonWebTokenRepository;
     private final KakaoJsonWebTokenRepository KakaoJsonWebTokenRepository;
-    private final List<String> excludedUrls = Arrays.asList("/favicon.ico","/api/reissue", "/api/oauth2/login", "/api/users/join", "/api/users/login", "/api/healthcheck", "/api/oauth2/callback");
+    private final List<String> excludedUrls = Arrays.asList("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html","/favicon.ico","/api/reissue", "/api/oauth2/login", "/api/healthcheck", "/api/oauth2/callback");
 
 
     @Bean
@@ -66,8 +66,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/healthcheck").permitAll()
                         .requestMatchers("/api/oauth2/login").permitAll()
                         .requestMatchers("/api/oauth2/callback").permitAll()
-                        .requestMatchers("/api/users/join").permitAll()
-                        .requestMatchers("/api/users/login").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/favicon.ico").permitAll()
                         .requestMatchers("/api/reissue").permitAll()
                         .anyRequest().authenticated())

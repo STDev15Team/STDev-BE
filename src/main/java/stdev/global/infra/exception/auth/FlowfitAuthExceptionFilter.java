@@ -2,7 +2,7 @@ package stdev.global.infra.exception.auth;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import flowfit.global.infra.exception.ErrorResponse;
+import stdev.global.infra.exception.ErrorResponse;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

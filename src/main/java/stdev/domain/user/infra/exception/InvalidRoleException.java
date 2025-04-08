@@ -1,7 +1,7 @@
 package stdev.domain.user.infra.exception;
 
 
-import flowfit.global.infra.exception.auth.FlowfitAuthException;
+import stdev.global.infra.exception.auth.FlowfitAuthException;
 import org.springframework.http.HttpStatus;
 
 public class InvalidRoleException extends FlowfitAuthException {

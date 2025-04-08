@@ -1,7 +1,7 @@
 package stdev.global.jwt.domain.repository;
 
 
-import flowfit.global.jwt.domain.entity.KakaoJsonWebToken;
+import stdev.global.jwt.domain.entity.KakaoJsonWebToken;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

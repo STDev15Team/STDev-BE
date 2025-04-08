@@ -1,8 +1,7 @@
 package stdev.domain.user.domain.entity;
 
 
-import flowfit.domain.user.domain.entity.member.Member;
-import flowfit.domain.user.domain.entity.trainer.Trainer;
+
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,12 +23,7 @@ public class User {
     @Column(nullable = false)
     private String email;
 
-    //아이디
-    @Column(nullable = true)
-    private String username;
 
-    @Column(nullable = true)
-    private String password;
 
     // 이름
     @Column(nullable = false)
@@ -38,8 +32,6 @@ public class User {
     @Column(nullable = true)
     private String profile;
 
-    @Column(nullable = true)
-    private String phoneNumber;
 
     @CreationTimestamp
     @Column(nullable = false)
@@ -49,24 +41,13 @@ public class User {
     @Column(name = "role", nullable = false)
     private Role role;
 
-    // 🔽 Member와 1:1 관계 (양방향)
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Member member;
-
-    // 🔽 Trainer와 1:1 관계 (양방향)
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Trainer trainer;
-
     @Builder
-    public User(String id, String email, String username, String password, String name,
-                String profile, String phoneNumber, Role role) {
+    public User(String id, String email, String name,
+                String profile, Role role) {
         this.id = id;
         this.email = email;
-        this.username = username;
-        this.password = password;
         this.name = name;
         this.profile = profile;
-        this.phoneNumber = phoneNumber;
         this.role = role;
     }
     public void updateNameAndEmailAndProfile(String name, String email, String profile) {

@@ -1,9 +1,9 @@
 package stdev.domain.user.presentation.controller;
 
-import flowfit.domain.user.application.service.UserService;
-import flowfit.domain.user.domain.repository.UserRepository;
-import flowfit.domain.user.presentation.dto.req.UserJoinDto;
-import flowfit.domain.user.presentation.dto.req.UserLoginDto;
+import stdev.domain.user.application.service.UserService;
+import stdev.domain.user.domain.repository.UserRepository;
+import stdev.domain.user.presentation.dto.req.UserJoinDto;
+import stdev.domain.user.presentation.dto.req.UserLoginDto;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,19 +19,6 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {
-    private final UserService userService;
-
-    private final UserRepository userRepository;
-    @PostMapping("/join")
-    public void UserJoin(@RequestBody UserJoinDto joinDto, HttpServletResponse response) throws IOException {
-        userService.userJoin(joinDto, response);
-    }
-
-    @PostMapping("/login")
-    public void UserJoin(@RequestBody UserLoginDto loginDto, HttpServletResponse response) throws IOException {
-        userService.userLoin(loginDto,response);
-    }
-
 
 
 

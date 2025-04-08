@@ -1,6 +1,6 @@
 package stdev.domain.oauth2.presentation.controller;
 
-import flowfit.domain.oauth2.application.service.LoginLinkService;
+import stdev.domain.oauth2.application.service.LoginLinkService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

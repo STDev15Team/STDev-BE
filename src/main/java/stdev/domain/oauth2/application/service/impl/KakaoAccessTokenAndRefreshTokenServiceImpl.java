@@ -1,8 +1,8 @@
 package stdev.domain.oauth2.application.service.impl;
 
-import flowfit.domain.oauth2.application.service.KakaoAccessTokenAndRefreshTokenService;
-import flowfit.domain.oauth2.presentation.dto.response.OAuth2TokenResponse;
-import flowfit.global.infra.feignclient.KakaoOAuth2URLFeignClient;
+import stdev.domain.oauth2.application.service.KakaoAccessTokenAndRefreshTokenService;
+import stdev.domain.oauth2.presentation.dto.response.OAuth2TokenResponse;
+import stdev.global.infra.feignclient.KakaoOAuth2URLFeignClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

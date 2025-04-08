@@ -1,6 +1,6 @@
 package stdev.domain.oauth2.application.service;
 
-import flowfit.domain.user.domain.entity.Role;
+import stdev.domain.user.domain.entity.Role;
 
 import java.util.Map;
 

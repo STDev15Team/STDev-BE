@@ -1,10 +1,10 @@
 package stdev.domain.oauth2.application.service.impl;
 
-import flowfit.domain.oauth2.application.service.CreateAccessTokenAndRefreshTokenService;
-import flowfit.domain.user.domain.entity.Role;
-import flowfit.global.jwt.domain.entity.JsonWebToken;
-import flowfit.global.jwt.domain.repository.JsonWebTokenRepository;
-import flowfit.global.jwt.util.JWTUtil;
+import stdev.domain.oauth2.application.service.CreateAccessTokenAndRefreshTokenService;
+import stdev.domain.user.domain.entity.Role;
+import stdev.global.jwt.domain.entity.JsonWebToken;
+import stdev.global.jwt.domain.repository.JsonWebTokenRepository;
+import stdev.global.jwt.util.JWTUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,6 +1,6 @@
 package stdev.domain.user.presentation.dto.req;
 
-import flowfit.domain.user.domain.entity.Role;
+import stdev.domain.user.domain.entity.Role;
 
 import java.time.LocalDateTime;
 

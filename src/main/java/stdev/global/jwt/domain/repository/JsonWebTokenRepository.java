@@ -1,6 +1,6 @@
 package stdev.global.jwt.domain.repository;
 
-import flowfit.global.jwt.domain.entity.JsonWebToken;
+import stdev.global.jwt.domain.entity.JsonWebToken;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

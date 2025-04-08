@@ -1,6 +1,6 @@
 spring:
   application:
-    name: flowfit-prod
+    name: stdev-prod
 
   config:
     import:

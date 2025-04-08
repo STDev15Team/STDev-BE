@@ -1,15 +1,14 @@
 package stdev.domain.oauth2.application.service.impl;
 
-import flowfit.domain.oauth2.application.service.KakaoUserCreateService;
-import flowfit.domain.oauth2.presentation.dto.response.OAuth2TokenResponse;
-import flowfit.domain.oauth2.presentation.dto.response.OAuth2UserResponse;
-import flowfit.domain.user.domain.entity.Role;
-import flowfit.domain.user.domain.entity.User;
-import flowfit.domain.user.domain.entity.trainer.Trainer;
-import flowfit.domain.user.domain.repository.TrainerRepository;
-import flowfit.domain.user.domain.repository.UserRepository;
-import flowfit.global.jwt.domain.entity.KakaoJsonWebToken;
-import flowfit.global.jwt.domain.repository.KakaoJsonWebTokenRepository;
+import stdev.domain.oauth2.application.service.KakaoUserCreateService;
+import stdev.domain.oauth2.presentation.dto.response.OAuth2TokenResponse;
+import stdev.domain.oauth2.presentation.dto.response.OAuth2UserResponse;
+import stdev.domain.user.domain.entity.Role;
+import stdev.domain.user.domain.entity.User;
+
+import stdev.domain.user.domain.repository.UserRepository;
+import stdev.global.jwt.domain.entity.KakaoJsonWebToken;
+import stdev.global.jwt.domain.repository.KakaoJsonWebTokenRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +25,6 @@ public class KakaoUserCreateServiceImpl implements KakaoUserCreateService {
 
     private final UserRepository userRepository;
     private final KakaoJsonWebTokenRepository KakaoJsonWebTokenRepository;
-    private final TrainerRepository trainerRepository;
 
     @Override
     public Map<String, String> createKakaoUser(OAuth2TokenResponse oAuth2TokenResponse, OAuth2UserResponse oAuth2UserResponse) {
@@ -49,10 +47,10 @@ public class KakaoUserCreateServiceImpl implements KakaoUserCreateService {
                     .email(oAuth2UserResponse.getEmail())  // 메소드 호출 방식으로 변경
                     .name(oAuth2UserResponse.getName())    // 메소드 호출 방식으로 변경
                     .profile(oAuth2UserResponse.getProfile())  // 메소드 호출 방식으로 변경
-                    .role(Role.TRAINER)
+                    .role(Role.MEMBER)
                     .build();
             userRepository.save(user);
-            trainerRepository.save(new Trainer(user));
+
         }
         else {
             user.updateNameAndEmailAndProfile(oAuth2UserResponse.getName(), oAuth2UserResponse.getEmail(), oAuth2UserResponse.getProfile());

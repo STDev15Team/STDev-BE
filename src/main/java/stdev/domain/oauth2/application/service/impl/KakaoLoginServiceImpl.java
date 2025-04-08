@@ -1,12 +1,12 @@
 package stdev.domain.oauth2.application.service.impl;
 
 
-import flowfit.domain.oauth2.application.service.*;
-import flowfit.domain.oauth2.presentation.dto.response.OAuth2TokenResponse;
-import flowfit.domain.oauth2.presentation.dto.response.OAuth2UserResponse;
-import flowfit.domain.user.domain.entity.Role;
-import flowfit.global.jwt.domain.entity.KakaoJsonWebToken;
-import flowfit.global.jwt.domain.repository.KakaoJsonWebTokenRepository;
+import stdev.domain.oauth2.application.service.*;
+import stdev.domain.oauth2.presentation.dto.response.OAuth2TokenResponse;
+import stdev.domain.oauth2.presentation.dto.response.OAuth2UserResponse;
+import stdev.domain.user.domain.entity.Role;
+import stdev.global.jwt.domain.entity.KakaoJsonWebToken;
+import stdev.global.jwt.domain.repository.KakaoJsonWebTokenRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

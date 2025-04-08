@@ -1,6 +1,6 @@
 package stdev.domain.oauth2.presentation.controller;
 
-import flowfit.domain.oauth2.application.service.ReissueService;
+import stdev.domain.oauth2.application.service.ReissueService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
