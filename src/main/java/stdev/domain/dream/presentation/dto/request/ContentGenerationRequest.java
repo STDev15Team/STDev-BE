@@ -1,4 +1,4 @@
-package stdev.domain.openai.presentation.dto.request;
+package stdev.domain.dream.presentation.dto.request;
 
 import lombok.Data;
 

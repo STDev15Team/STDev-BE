@@ -1,13 +1,13 @@
-package stdev.domain.openai.application.service.impl;
+package stdev.domain.lucky.application.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import stdev.domain.openai.application.service.OpenAILuckyService;
+import stdev.domain.lucky.application.OpenAILuckyService;
 import stdev.domain.openai.presentation.dto.request.OpenAITextRequest;
-import stdev.domain.openai.presentation.dto.response.LuckyGenerationResponse;
+import stdev.domain.lucky.presentation.dto.response.LuckyGenerationResponse;
 import stdev.domain.openai.presentation.dto.response.OpenAITextResponse;
 import stdev.domain.user.infra.exception.UserNotFoundException;
 import stdev.global.infra.feignclient.OpenAITextFeignClient;

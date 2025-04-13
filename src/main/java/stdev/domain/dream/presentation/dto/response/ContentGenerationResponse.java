@@ -1,4 +1,4 @@
-package stdev.domain.openai.presentation.dto.response;
+package stdev.domain.dream.presentation.dto.response;
 
 import lombok.*;
 

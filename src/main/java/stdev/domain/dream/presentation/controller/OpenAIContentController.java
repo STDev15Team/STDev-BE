@@ -1,12 +1,12 @@
-package stdev.domain.openai.presentation.controller;
+package stdev.domain.dream.presentation.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import stdev.domain.openai.application.service.OpenAIContentService;
-import stdev.domain.openai.presentation.dto.request.ContentGenerationRequest;
-import stdev.domain.openai.presentation.dto.response.ContentGenerationResponse;
+import stdev.domain.dream.application.OpenAIContentService;
+import stdev.domain.dream.presentation.dto.request.ContentGenerationRequest;
+import stdev.domain.dream.presentation.dto.response.ContentGenerationResponse;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
