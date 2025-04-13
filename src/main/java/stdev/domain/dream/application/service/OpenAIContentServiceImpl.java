@@ -1,17 +1,24 @@
 package stdev.domain.dream.application.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 import stdev.domain.dream.application.OpenAIContentService;
+import stdev.domain.dream.domain.entity.Dream;
+import stdev.domain.dream.domain.repository.DreamRepository;
 import stdev.domain.openai.presentation.dto.request.OpenAIImageRequest;
 import stdev.domain.openai.presentation.dto.request.OpenAITextRequest;
 import stdev.domain.dream.presentation.dto.response.ContentGenerationResponse;
 import stdev.domain.openai.presentation.dto.response.OpenAIImageResponse;
 import stdev.domain.openai.presentation.dto.response.OpenAITextResponse;
 import stdev.domain.user.infra.exception.UserNotFoundException;
+import stdev.global.config.FileStore;
 import stdev.global.infra.feignclient.OpenAIImageFeignClient;
 import stdev.global.infra.feignclient.OpenAITextFeignClient;
 
@@ -22,6 +29,7 @@ import java.util.concurrent.CompletableFuture;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class OpenAIContentServiceImpl implements OpenAIContentService {
 
     private final OpenAITextFeignClient openAITextFeignClient;
@@ -54,9 +62,9 @@ public class OpenAIContentServiceImpl implements OpenAIContentService {
                     try {
                         String text = textFuture.get();
                         String imageUrl = imageFuture.get();
-
                         return new ContentGenerationResponse(text, imageUrl);
                     } catch (Exception e) {
+                        log.info(e.getMessage());
                         throw new UserNotFoundException("생성 실패..");
                     }
                 });
@@ -96,7 +104,7 @@ public class OpenAIContentServiceImpl implements OpenAIContentService {
                         .model(textModel)
                         .messages(messages)
                         .temperature(0.7)
-                        .maxTokens(300)
+                        .maxTokens(600)
                         .build();
 
                 OpenAITextResponse response = openAITextFeignClient.generateText(
@@ -174,11 +182,13 @@ public class OpenAIContentServiceImpl implements OpenAIContentService {
                         "- 꿈 속 '%s'의 감정과 분위기를 표현하는 인물이나 상징적 요소를 포함하세요. " +
                         "- '%s'와 관련된 핵심 상징과 이미지를 포함하여 꿈의 본질을 즉시 인식할 수 있게 하세요. " +
                         "디자인 가이드라인: " +
-                        "- 깨끗하고 미니멀한 스타일에 부드럽고 몽환적인 색상을 사용하세요. " +
+                        "- 몽환적인 디자인을 사용하세요. " +
                         "- 복잡함을 피하고 꿈의 핵심 메시지가 명확히 드러나도록 하세요. " +
                         "- 텍스트를 포함하지 말고 순수하게 시각적 표현에 집중하세요. " +
                         "- 꿈의 상징적 의미가 시각적으로 전달될 수 있도록 하세요.",
-                topic,topic,topic
+                topic, topic, topic
         );
     }
+
+
 }
