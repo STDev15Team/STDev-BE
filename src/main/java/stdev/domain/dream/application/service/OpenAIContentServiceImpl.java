@@ -90,10 +90,7 @@ public class OpenAIContentServiceImpl implements OpenAIContentService {
                 List<OpenAITextRequest.Message> messages = new ArrayList<>();
                 messages.add(OpenAITextRequest.Message.builder()
                         .role("system")
-                        .content("당신은 꿈을 해석하는 전문가입니다. 심리학적 지식을 바탕으로 꿈에 등장하는 상징과 의미를 해석해 주세요. " +
-                                "사람들의 꿈에 나타나는 상징, 감정, 상황 등을 분석하여 잠재의식에 담긴 메시지를 찾아내고, " +
-                                "이를 일상생활에 적용할 수 있는 통찰력 있는 조언을 제공합니다. " +
-                                "전문 용어는 최소화하고 이해하기 쉬운 언어로 설명해 주세요.")
+                        .content("You are a dream interpretation expert. Based on psychological knowledge, please analyze the symbols and meanings that appear in the dream.")
                         .build());
                 messages.add(OpenAITextRequest.Message.builder()
                         .role("user")
@@ -104,7 +101,7 @@ public class OpenAIContentServiceImpl implements OpenAIContentService {
                         .model(textModel)
                         .messages(messages)
                         .temperature(0.7)
-                        .maxTokens(600)
+                        .maxTokens(300)
                         .build();
 
                 OpenAITextResponse response = openAITextFeignClient.generateText(
@@ -128,17 +125,13 @@ public class OpenAIContentServiceImpl implements OpenAIContentService {
 
     private String createTextPrompt(String topic) {
         return String.format(
-                "다음 꿈에 대한 해석을 카드뉴스 형식으로 만들어주세요: '%s'.\n" +
-                        "다음 형식으로 작성해주세요:\n" +
-                        "1. 제목: 꿈의 핵심을 담은 흥미로운 제목\n" +
-                        "2. 꿈의 상징 해석 (3-5개): 꿈에 등장한 주요 요소나 상징의 일반적인 의미\n" +
-                        "3. 심리적 의미: 꿈이 나타내는 잠재의식적 메시지나 감정 상태\n" +
-                        "4. 현실 적용: 이 꿈이 현실 생활에 주는 메시지나 조언\n\n" +
-                        "모든 내용은 친근하고 이해하기 쉬운 언어로 작성해주세요. 전문적인 심리 용어는 최소화하고, 일반인도 쉽게 이해할 수 있게 작성해주세요.",
+                "Please analyze the following dream: \"%s\".\n" +
+                        "Start your response with **either** '악몽,' or '해몽,' depending on the nature of the dream.\n" +
+                        "Then provide a symbolic interpretation, psychological analysis, and a helpful message for real life.\n" +
+                        "Your response must be written in Korean and should be between 250 and 300 characters.",
                 topic
         );
     }
-
     private CompletableFuture<String> generateImage(String topic) {
         return CompletableFuture.supplyAsync(() -> {
             try {
@@ -174,19 +167,12 @@ public class OpenAIContentServiceImpl implements OpenAIContentService {
 
     private String createImagePrompt(String topic) {
         return String.format(
-                "꿈 시각화: " +
-                        "- 목표: '%s'에 관한 꿈을 시각적으로 명확하고 표현력 있게 일러스트레이션으로 제작하여 한눈에 이해할 수 있도록 합니다. " +
-                        "역할: " +
-                        "- 당신은 꿈의 이미지와 상징을 시각적으로 표현하는 전문 일러스트레이터입니다. 무의식의 메시지를 시각적으로 효과적으로 전달합니다. " +
-                        "시각적 요소: " +
-                        "- 꿈 속 '%s'의 감정과 분위기를 표현하는 인물이나 상징적 요소를 포함하세요. " +
-                        "- '%s'와 관련된 핵심 상징과 이미지를 포함하여 꿈의 본질을 즉시 인식할 수 있게 하세요. " +
-                        "디자인 가이드라인: " +
-                        "- 몽환적인 디자인을 사용하세요. " +
-                        "- 복잡함을 피하고 꿈의 핵심 메시지가 명확히 드러나도록 하세요. " +
-                        "- 텍스트를 포함하지 말고 순수하게 시각적 표현에 집중하세요. " +
-                        "- 꿈의 상징적 의미가 시각적으로 전달될 수 있도록 하세요.",
-                topic, topic, topic
+                "\"%s\"에 관한 꿈을 고해상도로 시각화한 이미지. " +
+                        "꿈의 핵심 감정(공포, 혼란, 기쁨, 신비로움 등)을 시각적으로 자연스럽게 반영하고, " +
+                        "비현실적이고 초현실적인 분위기를 가진 장면으로 구성. " +
+                        "빛과 그림자, 색채, 인물의 동세와 표정 등을 통해 감정과 분위기를 전달할 것. " +
+                        "텍스트나 문구, 로고 등은 절대 포함하지 말 것.",
+                topic
         );
     }
 

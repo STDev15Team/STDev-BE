@@ -21,7 +21,7 @@ public class DreamController {
     @PostMapping
     public void dreamPost(    @RequestPart("comment") String comment,
                               @RequestPart("image") MultipartFile image) throws IOException {
-        log.info("하이");
+
         dreamService.dreamPost(comment, image);
     }
 
