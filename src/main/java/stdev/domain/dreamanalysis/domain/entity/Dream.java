@@ -1,4 +1,4 @@
-package stdev.domain.dream.domain.entity;
+package stdev.domain.dreamanalysis.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;

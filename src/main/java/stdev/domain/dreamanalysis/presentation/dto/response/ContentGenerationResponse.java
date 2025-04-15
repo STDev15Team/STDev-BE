@@ -1,4 +1,4 @@
-package stdev.domain.dream.presentation.dto.response;
+package stdev.domain.dreamanalysis.presentation.dto.response;
 
 import lombok.*;
 

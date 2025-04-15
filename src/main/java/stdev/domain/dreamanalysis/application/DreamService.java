@@ -1,7 +1,6 @@
-package stdev.domain.dream.application;
+package stdev.domain.dreamanalysis.application;
 
 import org.springframework.web.multipart.MultipartFile;
-import stdev.domain.dream.presentation.dto.request.DreamRecordRequest;
 
 import java.io.IOException;
 

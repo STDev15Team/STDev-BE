@@ -1,4 +1,4 @@
-package stdev.domain.dream.presentation.dto.request;
+package stdev.domain.dreamanalysis.presentation.dto.request;
 
 import org.springframework.web.multipart.MultipartFile;
 

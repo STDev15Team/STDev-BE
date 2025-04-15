@@ -1,12 +1,10 @@
-package stdev.domain.dream.presentation.controller;
+package stdev.domain.dreamanalysis.presentation.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import stdev.domain.dream.application.DreamService;
-import stdev.domain.dream.presentation.dto.request.DreamRecordRequest;
-import stdev.global.config.FileStore;
+import stdev.domain.dreamanalysis.application.DreamService;
 
 import java.io.IOException;
 
