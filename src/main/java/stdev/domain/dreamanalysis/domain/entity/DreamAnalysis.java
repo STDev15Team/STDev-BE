@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
+import stdev.domain.record.domain.entity.Record;
 
 import java.time.LocalDateTime;
 
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor
 @DynamicUpdate
-public class Dream {
+public class DreamAnalysis {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,14 +25,21 @@ public class Dream {
     @Column(nullable = false)
     private String dreamComment;
 
-    @CreationTimestamp
     @Column(nullable = false)
-    private LocalDateTime createdAt;
+    private String dreamCategory; // enum 귀찮다잉
+
+    @Column(nullable = false)
+    private boolean flag;
+
+    @OneToOne(mappedBy = "dreamAnalysis")
+    private Record record;
 
 
     @Builder
-    public Dream(String dreamImageUrl, String dreamComment) {
+    public DreamAnalysis(String dreamImageUrl, String dreamComment, String dreamCategory, boolean flag) {
         this.dreamImageUrl = dreamImageUrl;
         this.dreamComment = dreamComment;
+        this.dreamCategory = dreamCategory;
+        this.flag = flag;
     }
 }

@@ -1,4 +1,4 @@
-package stdev.domain.lucky.presentation.dto.response;
+package stdev.domain.other.presentation.dto.response;
 
 public record LuckyGenerationResponse(
         String text

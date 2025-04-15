@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import stdev.domain.dreamanalysis.application.DreamService;
-import stdev.domain.dreamanalysis.domain.entity.Dream;
+import stdev.domain.dreamanalysis.domain.entity.DreamAnalysis;
 import stdev.domain.dreamanalysis.domain.repository.DreamRepository;
 import stdev.global.config.FileStore;
 
@@ -24,7 +24,7 @@ public class DreamServiceImpl implements DreamService {
     @Override
     public void dreamPost(String comment, MultipartFile image) throws IOException {
         String imageUrl = fileStore.storeFile(image);
-        Dream dream = Dream.builder().dreamImageUrl(imageUrl).dreamComment(comment).build();
+        DreamAnalysis dream = DreamAnalysis.builder().dreamImageUrl(imageUrl).dreamComment(comment).build();
 
         dreamRepository.save(dream);
     }
