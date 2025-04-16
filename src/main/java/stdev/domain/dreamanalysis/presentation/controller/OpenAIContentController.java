@@ -8,8 +8,7 @@ import stdev.domain.dreamanalysis.application.OpenAIContentService;
 import stdev.domain.dreamanalysis.presentation.dto.request.ContentGenerationRequest;
 import stdev.domain.dreamanalysis.presentation.dto.response.DreamCommentResponse;
 import stdev.domain.dreamanalysis.presentation.dto.response.DreamImageResponse;
-
-import java.util.concurrent.ExecutionException;
+import stdev.domain.dreamanalysis.presentation.dto.response.HeadResponse;
 
 @RestController
 @RequestMapping("/api/openai")
@@ -29,4 +28,11 @@ public class OpenAIContentController {
     public ResponseEntity<DreamImageResponse> generateImage(@RequestBody ContentGenerationRequest request) {
         return ResponseEntity.ok(openAIContentService.generateImage(request.topic()));
     }
+
+
+    @GetMapping("/head")
+    public ResponseEntity<HeadResponse> generateHead(@RequestParam String category) {
+        return ResponseEntity.ok(openAIContentService.generateHead(category));
+    }
+
 }

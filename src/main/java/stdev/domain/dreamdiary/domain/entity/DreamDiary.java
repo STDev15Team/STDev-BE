@@ -23,6 +23,8 @@ public class DreamDiary {
 
     private LocalDateTime sleepEnd;
 
+
+    // 수면 메모
     private String note;
 
     private String rate;
@@ -34,12 +36,15 @@ public class DreamDiary {
     // 꿈 카테고리
     private String category;
 
+    // 특이사항
+    private String issueDetail;
+
     @OneToOne(mappedBy = "dreamDiary")
     private Record record;
 
     @Builder
     public DreamDiary(LocalDateTime sleepStart, LocalDateTime sleepEnd, String note,
-                      String rate, String title, String content, String category) {
+                      String rate, String title, String content, String category, String issueDetail) {
         this.sleepStart = sleepStart;
         this.sleepEnd = sleepEnd;
         this.note = note;
@@ -47,5 +52,6 @@ public class DreamDiary {
         this.title = title;
         this.content = content;
         this.category = category;
+        this.issueDetail = issueDetail;
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import stdev.domain.dreamanalysis.application.DreamService;
 import stdev.domain.dreamanalysis.domain.entity.DreamAnalysis;
-import stdev.domain.dreamanalysis.domain.repository.DreamRepository;
+import stdev.domain.dreamanalysis.domain.repository.DreamAnalysisRepository;
 import stdev.global.config.FileStore;
 
 import java.io.IOException;
@@ -17,7 +17,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Slf4j
 public class DreamServiceImpl implements DreamService {
-    private final DreamRepository dreamRepository;
+    private final DreamAnalysisRepository dreamRepository;
     private final FileStore fileStore;
 
 

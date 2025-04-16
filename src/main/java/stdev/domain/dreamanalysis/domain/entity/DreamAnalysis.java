@@ -19,10 +19,10 @@ public class DreamAnalysis {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String dreamImageUrl;
 
-    @Column(nullable = false)
+    @Column(name = "dream_comment", length = 1000)
     private String dreamComment;
 
     @Column(nullable = false)

@@ -11,21 +11,16 @@ import java.io.IOException;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/api/dream")
+//@RequestMapping("/api/dream")
 public class DreamController {
 
     private final DreamService dreamService;
 
-    @PostMapping
+    //@PostMapping
     public void dreamPost(    @RequestPart("comment") String comment,
                               @RequestPart("image") MultipartFile image) throws IOException {
 
         dreamService.dreamPost(comment, image);
     }
 
-    @PatchMapping
-    public void dreamPost2() throws IOException {
-        log.info("하이");
-
-    }
 }

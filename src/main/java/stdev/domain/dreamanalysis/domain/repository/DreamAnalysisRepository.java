@@ -1,7 +1,8 @@
 package stdev.domain.dreamanalysis.domain.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import stdev.domain.dreamanalysis.domain.entity.DreamAnalysis;
-
-public interface DreamRepository extends JpaRepository<DreamAnalysis, Long> {
+@Repository
+public interface DreamAnalysisRepository extends JpaRepository<DreamAnalysis, Long> {
 }

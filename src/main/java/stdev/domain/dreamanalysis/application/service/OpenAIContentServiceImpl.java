@@ -4,20 +4,28 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import stdev.domain.dreamanalysis.application.OpenAIContentService;
 import stdev.domain.dreamanalysis.presentation.dto.response.DreamCommentResponse;
 import stdev.domain.dreamanalysis.presentation.dto.response.DreamImageResponse;
+import stdev.domain.dreamanalysis.presentation.dto.response.HeadResponse;
 import stdev.domain.openai.presentation.dto.request.OpenAIImageRequest;
 import stdev.domain.openai.presentation.dto.request.OpenAITextRequest;
 import stdev.domain.dreamanalysis.presentation.dto.response.ContentGenerationResponse;
 import stdev.domain.openai.presentation.dto.response.OpenAIImageResponse;
 import stdev.domain.openai.presentation.dto.response.OpenAITextResponse;
+import stdev.domain.other.domain.entity.Head;
+import stdev.domain.other.domain.repository.HeadRepository;
 import stdev.domain.user.infra.exception.UserNotFoundException;
+import stdev.global.config.FileStore;
 import stdev.global.infra.feignclient.OpenAIImageFeignClient;
 import stdev.global.infra.feignclient.OpenAITextFeignClient;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -30,7 +38,9 @@ public class OpenAIContentServiceImpl implements OpenAIContentService {
 
     private final OpenAITextFeignClient openAITextFeignClient;
     private final OpenAIImageFeignClient openAIImageFeignClient;
+    private final HeadRepository headRepository;
 
+    private final FileStore fileStore;
     @Value("${openai.api.key}")
     private String apiKey;
 
@@ -65,7 +75,7 @@ public class OpenAIContentServiceImpl implements OpenAIContentService {
                     .model(textModel)
                     .messages(messages)
                     .temperature(0.7)
-                    .maxTokens(300)
+                    .maxTokens(500)
                     .build();
 
             OpenAITextResponse response = openAITextFeignClient.generateText(
@@ -80,7 +90,7 @@ public class OpenAIContentServiceImpl implements OpenAIContentService {
                 String substring = content.substring(4);
 
                 String comment = substring.trim();
-                return DreamCommentResponse.of(comment, category);
+                return DreamCommentResponse.of(comment, category, true);
             } else {
                 throw new UserNotFoundException("내용을 생성할 수 없습니다.");
             }
@@ -112,7 +122,10 @@ public class OpenAIContentServiceImpl implements OpenAIContentService {
                 String imageUrl = response.getData().get(0).getUrl();
                 log.info("Generated image URL: {}", imageUrl);
 
-                return DreamImageResponse.of(imageUrl);
+                MultipartFile multipartFile = convertImageUrlToMultipartFile(imageUrl);
+                String imageUrlF = fileStore.storeFile(multipartFile);
+
+                return DreamImageResponse.of(imageUrlF);
             } else {
                 log.error("No image data returned from OpenAI API");
                 return null;
@@ -123,16 +136,39 @@ public class OpenAIContentServiceImpl implements OpenAIContentService {
         }
     }
 
+    @Override
+    public HeadResponse generateHead(String category) {
+        log.info(category);
+        Head head = headRepository.findByHeadCategory(category).orElse(null);
+        if (head == null) {
+            throw new UserNotFoundException("뇌 정보가 없다");
+        }
+        return HeadResponse.of(head.getHeadImage(), head.getHeadContent());
+    }
+
 
     private String createTextPrompt(String topic) {
+
         return String.format(
                 "Please analyze the following dream: \"%s\".\n" +
-                        "Start your response with **either** '악몽,' or '해몽,' depending on the nature of the dream.\n" +
-                        "Then provide a symbolic interpretation, psychological analysis, and a helpful message for real life.\n" +
-                        "Your response must be written in Korean and should be between 250 and 300 characters.",
+                        "Start your response with **either** '악몽:' or '해몽:' depending on the nature of the dream.\n" +
+                        "Then structure your response in this exact format with emojis:\n" +
+                        "\n" +
+                        "🔍 꿈의 주체: [꿈에서 나온 주요 주체나 대상을 직접 명시, 예: 불, 지각, 시험 등]\n" +
+                        "[꿈에서 나온 주체에 대한 설명 - 무엇이 중요했는지, 어떤 상징성을 가지는지]\n" +
+                        "\n" +
+                        "😊/😨 꿈의 감정: [주요 감정을 직접 명시, 예: 불안과 스트레스, 기쁨과 설렘 등]\n" +
+                        "[꿈에서 느껴진 감정들과 그 의미에 대한 설명]\n" +
+                        "\n" +
+                        "💭 꿈의 의미: [왜 이런 꿈을 꾸었는지]\n" +
+                        "\n" +
+                        "[꿈이 나타내는 심리상태나 현실에서의 연관성에 대한 해석]\n" +
+                        "\n" +
+                        "Make sure to format the titles exactly as shown, with emojis at the beginning and including the specific subject or emotions in the titles. IMPORTANT: In the '꿈의 의미' section, add a blank line after the title before starting the explanation. Your response must be written in Korean and should be between 450 and 500 characters.",
                 topic
         );
     }
+
 
     private String createImagePrompt(String topic) {
         return String.format(
@@ -145,4 +181,28 @@ public class OpenAIContentServiceImpl implements OpenAIContentService {
         );
     }
 
+
+    public MultipartFile convertImageUrlToMultipartFile(String imageUrl) throws Exception {
+        // 1. 이미지 URL로부터 InputStream 열기
+        URL url = new URL(imageUrl);
+        InputStream inputStream = url.openStream();
+
+        // 2. InputStream → byte[]
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        byte[] data = new byte[1024];
+        int nRead;
+        while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
+            buffer.write(data, 0, nRead);
+        }
+        buffer.flush();
+        byte[] imageBytes = buffer.toByteArray();
+
+        // 3. byte[]로 MultipartFile 생성
+        return new MockMultipartFile(
+                "file",                     // name
+                "image.jpg",                // original filename
+                "image/jpeg",               // content type
+                imageBytes                  // byte[]
+        );
+    }
 }
