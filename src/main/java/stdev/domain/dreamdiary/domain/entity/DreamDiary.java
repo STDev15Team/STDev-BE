@@ -36,25 +36,22 @@ public class DreamDiary {
     private String content;
 
 
-    @OneToMany(mappedBy = "dreamDiary", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DiaryCategory> diaryCategories = new ArrayList<>();
+    private String diaryCategory;
 
-
-    // 특이사항
-    private String issueDetail;
 
     @OneToOne(mappedBy = "dreamDiary")
     private Record record;
 
     @Builder
     public DreamDiary(LocalDateTime sleepStart, LocalDateTime sleepEnd, String note,
-                      String rate, String title, String content, String issueDetail) {
+                      String rate, String title, String content,  String diaryCategory) {
         this.sleepStart = sleepStart;
         this.sleepEnd = sleepEnd;
         this.note = note;
         this.rate = rate;
         this.title = title;
         this.content = content;
-        this.issueDetail = issueDetail;
+
+        this.diaryCategory=diaryCategory;
     }
 }

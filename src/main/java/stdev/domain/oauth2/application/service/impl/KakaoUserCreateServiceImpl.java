@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Map;
 
 @Service
@@ -48,6 +49,8 @@ public class KakaoUserCreateServiceImpl implements KakaoUserCreateService {
                     .name(oAuth2UserResponse.getName())    // 메소드 호출 방식으로 변경
                     .profile(oAuth2UserResponse.getProfile())  // 메소드 호출 방식으로 변경
                     .role(Role.MEMBER)
+                    .startTime(LocalTime.of(22, 0))
+                    .endTime(LocalTime.of(8, 0))
                     .build();
             userRepository.save(user);
 

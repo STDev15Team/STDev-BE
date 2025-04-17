@@ -10,6 +10,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import stdev.domain.record.domain.entity.Record;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +34,12 @@ public class User {
     @Column(nullable = true)
     private String profile;
 
+    @Column(nullable = false)
+    private LocalTime startTime;
+
+    @Column(nullable = false)
+    private LocalTime endTime;
+
 
     @CreationTimestamp
     @Column(nullable = false)
@@ -47,17 +54,24 @@ public class User {
 
     @Builder
     public User(String id, String email, String name,
-                String profile, Role role) {
+                String profile, Role role, LocalTime startTime, LocalTime endTime) {
         this.id = id;
         this.email = email;
         this.name = name;
         this.profile = profile;
         this.role = role;
+        this.startTime= startTime;
+        this.endTime=endTime;
     }
 
     public void updateNameAndEmailAndProfile(String name, String email, String profile) {
         this.name = name;
         this.email = email;
         this.profile = profile;
+    }
+
+    public void updateTime(LocalTime startTime, LocalTime endTime) {
+        this.startTime = startTime;
+        this.endTime= endTime;
     }
 }

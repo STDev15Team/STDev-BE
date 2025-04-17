@@ -59,7 +59,7 @@ public class DreamDiaryServiceImpl implements DreamDiaryService {
         }
 
         List<DreamDiary> bySleepStartYearAndMonth = dreamDiaryRepository.findBySleepStartYearAndMonthAndDay(
-                req.sleepStart().getYear(), req.sleepStart().getMonthValue(),req.sleepStart().getDayOfMonth());
+                req.sleepStart().getYear(), req.sleepStart().getMonthValue(), req.sleepStart().getDayOfMonth());
 
         if (!bySleepStartYearAndMonth.isEmpty()) {
             throw new InfromationDiaryException();
@@ -74,7 +74,7 @@ public class DreamDiaryServiceImpl implements DreamDiaryService {
                     .rate(req.rate())
                     .title(req.title())
                     .content(req.content())
-                    .issueDetail(req.issueDetail())
+                    .diaryCategory(req.diaryCategory())
                     .build();
             DreamAnalysis dreamAnalysis = DreamAnalysis.builder()
                     .flag(true)
@@ -91,10 +91,10 @@ public class DreamDiaryServiceImpl implements DreamDiaryService {
             DreamDiary diarySave = dreamDiaryRepository.save(dreamDiary);
             diarySave.getId();
 
-            for (String category : req.categories()) {
-                DiaryCategory diaryCategory = DiaryCategory.builder().name(category).dreamDiary(diarySave).build();
-                diaryCategoryRepository.save(diaryCategory);
-            }
+//            for (String category : req.categories()) {
+//                DiaryCategory diaryCategory = DiaryCategory.builder().name(category).dreamDiary(diarySave).build();
+//                diaryCategoryRepository.save(diaryCategory);
+//            }
             dreamAnalysisRepository.save(dreamAnalysis);
             Record save = recordRepository.save(record);
             return DiaryPostResponse.of(save.getId());
@@ -107,7 +107,7 @@ public class DreamDiaryServiceImpl implements DreamDiaryService {
                     .rate(req.rate())
                     .title(req.title())
                     .content(req.content())
-                    .issueDetail(req.issueDetail())
+                    .diaryCategory(req.diaryCategory())
                     .build();
 
             Record record = Record.builder()
@@ -117,10 +117,10 @@ public class DreamDiaryServiceImpl implements DreamDiaryService {
                     .build();
             DreamDiary diarySave = dreamDiaryRepository.save(dreamDiary);
 
-            for (String category : req.categories()) {
-                DiaryCategory diaryCategory = DiaryCategory.builder().name(category).dreamDiary(diarySave).build();
-                diaryCategoryRepository.save(diaryCategory);
-            }
+//            for (String category : req.categories()) {
+//                DiaryCategory diaryCategory = DiaryCategory.builder().name(category).dreamDiary(diarySave).build();
+//                diaryCategoryRepository.save(diaryCategory);
+//            }
             Record save = recordRepository.save(record);
             return DiaryPostResponse.of(save.getId());
         }
@@ -133,12 +133,12 @@ public class DreamDiaryServiceImpl implements DreamDiaryService {
             throw new UserNotFoundException("기록이 없습니다.");
         }
         DreamDiary dreamDiary = record.getDreamDiary();
-        List<DiaryCategory> diaryCategories = dreamDiary.getDiaryCategories();
-
-        List<String> list = new ArrayList<>();
-        for (DiaryCategory diaryCategory : diaryCategories) {
-            list.add(diaryCategory.getName());
-        }
+//        List<DiaryCategory> diaryCategories = dreamDiary.getDiaryCategories();
+//
+//        List<String> list = new ArrayList<>();
+//        for (DiaryCategory diaryCategory : diaryCategories) {
+//            list.add(diaryCategory.getName());
+//        }
 
         DreamAnalysis dreamAnalysis = record.getDreamAnalysis();
         boolean flag = true; // 꿈 분석 있는지 없는지
@@ -146,7 +146,7 @@ public class DreamDiaryServiceImpl implements DreamDiaryService {
             flag = false;
         }
         return DiaryGetResponse.of(dreamDiary.getId(), dreamDiary.getSleepStart(), dreamDiary.getSleepEnd(), dreamDiary.getNote()
-                , dreamDiary.getRate(), dreamDiary.getTitle(), dreamDiary.getContent(), list, dreamDiary.getIssueDetail(), flag);
+                , dreamDiary.getRate(), dreamDiary.getTitle(), dreamDiary.getContent(), dreamDiary.getDiaryCategory(), flag);
     }
 
     @Override

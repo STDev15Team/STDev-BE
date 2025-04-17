@@ -21,10 +21,9 @@ public record DiaryPostRequest(
         String content,
 
         // 꿈 카테고리
-        List<String> categories,
+        String diaryCategory,
 
-        // 특이사항
-        String issueDetail,
+
 
         String comment,
 

@@ -20,10 +20,9 @@ public record DiaryGetResponse(
         String content,
 
         // 꿈 카테고리
-        List<String> diaryCategory,
+        String diaryCategory,
 
-        // 특이사항
-        String issueDetail,
+
 
         // 꿈 분석이 있는지 없는지
         boolean flag
@@ -43,13 +42,10 @@ public record DiaryGetResponse(
 
                                       String content,
 
-                                      // 꿈 카테고리
-                                      List<String> diaryCategory,
+                                      String diaryCategory,
 
-                                      // 특이사항
-                                      String issueDetail,
                                       boolean flag) {
-        return new DiaryGetResponse(id, sleepStart, sleepEnd, note, rate, title, content, diaryCategory, issueDetail, flag);
+        return new DiaryGetResponse(id, sleepStart, sleepEnd, note, rate, title, content, diaryCategory, flag);
     }
 
 }
