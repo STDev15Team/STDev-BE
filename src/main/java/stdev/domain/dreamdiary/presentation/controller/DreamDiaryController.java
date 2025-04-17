@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import stdev.domain.dreamdiary.application.DreamDiaryService;
 import stdev.domain.dreamdiary.presentation.dto.request.DiaryPostRequest;
+import stdev.domain.dreamdiary.presentation.dto.response.DiaryGetResponse;
 import stdev.domain.dreamdiary.presentation.dto.response.DiaryPostResponse;
 import stdev.domain.dreamdiary.presentation.dto.response.SleepRateResponse;
 
@@ -29,6 +30,12 @@ public class DreamDiaryController {
         DiaryPostResponse diaryPostResponse = dreamDiaryService.dreamPost(req, userId);
         return ResponseEntity.ok(diaryPostResponse);
     }
+
+    @GetMapping("/dream/diary/{id}")
+    public ResponseEntity<DiaryGetResponse> dreamDiaryGet(@PathVariable Long id) {
+        return ResponseEntity.ok(dreamDiaryService.dreamGet(id));
+    }
+
 
     @GetMapping("/sleep/rate")
     public ResponseEntity<List<SleepRateResponse>> sleepRate(

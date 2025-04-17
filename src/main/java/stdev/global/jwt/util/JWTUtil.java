@@ -2,8 +2,8 @@ package stdev.global.jwt.util;
 
 
 import stdev.domain.user.domain.entity.Role;
-import stdev.global.jwt.util.exception.FlowfitJWTException;
-import stdev.global.jwt.util.exception.FlowfitJWTExpiredException;
+import stdev.global.jwt.util.exception.StdevJWTException;
+import stdev.global.jwt.util.exception.StdevJWTExpiredException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -41,10 +41,10 @@ public class JWTUtil {
             return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("id", String.class);
         }
         catch(ExpiredJwtException e) {
-            throw new FlowfitJWTExpiredException("JWT 가 만료되었습니다.");
+            throw new StdevJWTExpiredException("JWT 가 만료되었습니다.");
         }
         catch(JwtException e) {
-            throw new FlowfitJWTException("JWT token 로드에 실패했습니다.");
+            throw new StdevJWTException("JWT token 로드에 실패했습니다.");
         }
     }
 
@@ -53,10 +53,10 @@ public class JWTUtil {
             return Role.getByValue("ROLE_" + Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role", String.class));
         }
         catch(ExpiredJwtException e) {
-            throw new FlowfitJWTExpiredException("JWT 가 만료되었습니다.");
+            throw new StdevJWTExpiredException("JWT 가 만료되었습니다.");
         }
         catch(JwtException e) {
-            throw new FlowfitJWTException("JWT token 로드에 실패했습니다.");
+            throw new StdevJWTException("JWT token 로드에 실패했습니다.");
         }
     }
 

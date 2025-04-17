@@ -20,7 +20,7 @@ import org.springframework.web.filter.GenericFilterBean;
 import java.io.IOException;
 
 @RequiredArgsConstructor
-public class FlowfitLogoutFilter extends GenericFilterBean {
+public class StdevLogoutFilter extends GenericFilterBean {
 
     private final JWTUtil jwtUtil;
     private final JsonWebTokenRepository jsonWebTokenRepository;

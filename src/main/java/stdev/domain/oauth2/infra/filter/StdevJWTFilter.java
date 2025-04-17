@@ -26,7 +26,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Slf4j
-public class FlowfitJWTFilter extends OncePerRequestFilter {
+public class StdevJWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
     private final List<String> excludedPaths;

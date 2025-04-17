@@ -8,16 +8,18 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import stdev.domain.dreamanalysis.application.OpenAIContentService;
-import stdev.domain.dreamanalysis.presentation.dto.response.DreamCommentResponse;
-import stdev.domain.dreamanalysis.presentation.dto.response.DreamImageResponse;
-import stdev.domain.dreamanalysis.presentation.dto.response.HeadResponse;
+import stdev.domain.dreamanalysis.domain.entity.DreamAnalysis;
+import stdev.domain.dreamanalysis.domain.repository.DreamAnalysisRepository;
+import stdev.domain.dreamanalysis.presentation.dto.response.*;
+import stdev.domain.dreamdiary.domain.repository.DreamDiaryRepository;
 import stdev.domain.openai.presentation.dto.request.OpenAIImageRequest;
 import stdev.domain.openai.presentation.dto.request.OpenAITextRequest;
-import stdev.domain.dreamanalysis.presentation.dto.response.ContentGenerationResponse;
 import stdev.domain.openai.presentation.dto.response.OpenAIImageResponse;
 import stdev.domain.openai.presentation.dto.response.OpenAITextResponse;
 import stdev.domain.other.domain.entity.Head;
 import stdev.domain.other.domain.repository.HeadRepository;
+import stdev.domain.record.domain.entity.Record;
+import stdev.domain.record.domain.repository.RecordRepository;
 import stdev.domain.user.infra.exception.UserNotFoundException;
 import stdev.global.config.FileStore;
 import stdev.global.infra.feignclient.OpenAIImageFeignClient;
@@ -39,6 +41,9 @@ public class OpenAIContentServiceImpl implements OpenAIContentService {
     private final OpenAITextFeignClient openAITextFeignClient;
     private final OpenAIImageFeignClient openAIImageFeignClient;
     private final HeadRepository headRepository;
+    private final RecordRepository recordRepository;
+    private final DreamAnalysisRepository dreamAnalysisRepository;
+    private final DreamDiaryRepository dreamDiaryRepository;
 
     private final FileStore fileStore;
     @Value("${openai.api.key}")
@@ -144,6 +149,24 @@ public class OpenAIContentServiceImpl implements OpenAIContentService {
             throw new UserNotFoundException("뇌 정보가 없다");
         }
         return HeadResponse.of(head.getHeadImage(), head.getHeadContent());
+    }
+
+    @Override
+    public ContentResponse getContent(Long id, String userId) {
+        Record record = recordRepository.findById(id).orElse(null);
+        if (record == null) {
+            throw new UserNotFoundException("기록이 없습니다.");
+        }
+        DreamAnalysis dreamAnalysis = record.getDreamAnalysis();
+        String dreamCategory = dreamAnalysis.getDreamCategory();
+        Head head = headRepository.findByHeadCategory(dreamCategory).orElse(null);
+        if (head == null) {
+            throw new UserNotFoundException("해당 뇌 데이터가 없습니다.");
+        }
+
+        return ContentResponse.of(dreamAnalysis.getDreamComment(),
+                dreamAnalysis.getDreamImageUrl(), head.getHeadImage(), head.getHeadContent());
+
     }
 
 

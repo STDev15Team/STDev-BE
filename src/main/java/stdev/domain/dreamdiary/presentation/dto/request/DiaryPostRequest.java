@@ -3,6 +3,7 @@ package stdev.domain.dreamdiary.presentation.dto.request;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record DiaryPostRequest(
         LocalDateTime sleepStart,
@@ -20,7 +21,7 @@ public record DiaryPostRequest(
         String content,
 
         // 꿈 카테고리
-        String category,
+        List<String> categories,
 
         // 특이사항
         String issueDetail,

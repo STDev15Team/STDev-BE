@@ -7,9 +7,13 @@ import org.springframework.stereotype.Service;
 import stdev.domain.dreamanalysis.domain.entity.DreamAnalysis;
 import stdev.domain.dreamanalysis.domain.repository.DreamAnalysisRepository;
 import stdev.domain.dreamdiary.application.DreamDiaryService;
+import stdev.domain.dreamdiary.domain.entity.DiaryCategory;
 import stdev.domain.dreamdiary.domain.entity.DreamDiary;
+import stdev.domain.dreamdiary.domain.repository.DiaryCategoryRepository;
 import stdev.domain.dreamdiary.domain.repository.DreamDiaryRepository;
+import stdev.domain.dreamdiary.infra.exception.InfromationDiaryException;
 import stdev.domain.dreamdiary.presentation.dto.request.DiaryPostRequest;
+import stdev.domain.dreamdiary.presentation.dto.response.DiaryGetResponse;
 import stdev.domain.dreamdiary.presentation.dto.response.DiaryPostResponse;
 import stdev.domain.dreamdiary.presentation.dto.response.SleepRateResponse;
 import stdev.domain.record.domain.entity.Record;
@@ -43,13 +47,25 @@ public class DreamDiaryServiceImpl implements DreamDiaryService {
     private final UserRepository userRepository;
 
 
+    private final DiaryCategoryRepository diaryCategoryRepository;
+
+
     @Override
     public DiaryPostResponse dreamPost(DiaryPostRequest req, String userId) {
         User user = userRepository.findById(userId).orElse(null);
 
         if (user == null) {
-            throw new UserNotFoundException("정보 없음요");
+            throw new UserNotFoundException("회원 정보 없음요");
         }
+
+        List<DreamDiary> bySleepStartYearAndMonth = dreamDiaryRepository.findBySleepStartYearAndMonthAndDay(
+                req.sleepStart().getYear(), req.sleepStart().getMonthValue(),req.sleepStart().getDayOfMonth());
+
+        if (!bySleepStartYearAndMonth.isEmpty()) {
+            throw new InfromationDiaryException();
+        }
+
+
         if (req.flag()) {
             DreamDiary dreamDiary = DreamDiary.
                     builder().sleepStart(req.sleepStart())
@@ -58,7 +74,6 @@ public class DreamDiaryServiceImpl implements DreamDiaryService {
                     .rate(req.rate())
                     .title(req.title())
                     .content(req.content())
-                    .category(req.category())
                     .issueDetail(req.issueDetail())
                     .build();
             DreamAnalysis dreamAnalysis = DreamAnalysis.builder()
@@ -72,7 +87,14 @@ public class DreamDiaryServiceImpl implements DreamDiaryService {
                     .user(user)
                     .dreamAnalysis(dreamAnalysis)
                     .build();
-            dreamDiaryRepository.save(dreamDiary);
+
+            DreamDiary diarySave = dreamDiaryRepository.save(dreamDiary);
+            diarySave.getId();
+
+            for (String category : req.categories()) {
+                DiaryCategory diaryCategory = DiaryCategory.builder().name(category).dreamDiary(diarySave).build();
+                diaryCategoryRepository.save(diaryCategory);
+            }
             dreamAnalysisRepository.save(dreamAnalysis);
             Record save = recordRepository.save(record);
             return DiaryPostResponse.of(save.getId());
@@ -85,7 +107,6 @@ public class DreamDiaryServiceImpl implements DreamDiaryService {
                     .rate(req.rate())
                     .title(req.title())
                     .content(req.content())
-                    .category(req.category())
                     .issueDetail(req.issueDetail())
                     .build();
 
@@ -94,10 +115,38 @@ public class DreamDiaryServiceImpl implements DreamDiaryService {
                     .user(user)
                     .dreamAnalysis(null)
                     .build();
-            dreamDiaryRepository.save(dreamDiary);
+            DreamDiary diarySave = dreamDiaryRepository.save(dreamDiary);
+
+            for (String category : req.categories()) {
+                DiaryCategory diaryCategory = DiaryCategory.builder().name(category).dreamDiary(diarySave).build();
+                diaryCategoryRepository.save(diaryCategory);
+            }
             Record save = recordRepository.save(record);
             return DiaryPostResponse.of(save.getId());
         }
+    }
+
+    @Override
+    public DiaryGetResponse dreamGet(Long id) {
+        Record record = recordRepository.findById(id).orElse(null);
+        if (record == null) {
+            throw new UserNotFoundException("기록이 없습니다.");
+        }
+        DreamDiary dreamDiary = record.getDreamDiary();
+        List<DiaryCategory> diaryCategories = dreamDiary.getDiaryCategories();
+
+        List<String> list = new ArrayList<>();
+        for (DiaryCategory diaryCategory : diaryCategories) {
+            list.add(diaryCategory.getName());
+        }
+
+        DreamAnalysis dreamAnalysis = record.getDreamAnalysis();
+        boolean flag = true; // 꿈 분석 있는지 없는지
+        if (dreamAnalysis == null) {
+            flag = false;
+        }
+        return DiaryGetResponse.of(dreamDiary.getId(), dreamDiary.getSleepStart(), dreamDiary.getSleepEnd(), dreamDiary.getNote()
+                , dreamDiary.getRate(), dreamDiary.getTitle(), dreamDiary.getContent(), list, dreamDiary.getIssueDetail(), flag);
     }
 
     @Override
@@ -112,7 +161,7 @@ public class DreamDiaryServiceImpl implements DreamDiaryService {
         List<DreamDiary> diaries = dreamDiaryRepository.findLast7DaysDreamsByUserId(userId);
         Map<LocalDate, DreamDiary> diaryMap = diaries.stream()
                 .collect(Collectors.toMap(
-                        d -> d.getSleepEnd().toLocalDate(),
+                        d -> d.getSleepStart().toLocalDate(),
                         Function.identity()
                 ));
 

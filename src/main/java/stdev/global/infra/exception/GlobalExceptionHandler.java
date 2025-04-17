@@ -2,7 +2,7 @@ package stdev.global.infra.exception;
 
 
 import stdev.domain.user.infra.exception.UserNotFoundException;
-import stdev.global.infra.exception.auth.FlowfitAuthException;
+import stdev.global.infra.exception.auth.StdevAuthException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,14 +16,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(FlowfitException.class)
-    public ResponseEntity<ErrorResponse> handleFlowfitException(FlowfitException e) {
-        log.error("FlowfitException caught: {}", e.getMessage());
+    @ExceptionHandler(StDevException.class)
+    public ResponseEntity<ErrorResponse> handleStdevException(StDevException e) {
+        log.error("StdevException caught: {}", e.getMessage());
         return ResponseEntity.status(e.getStatus()).body(ErrorResponse.of(e));
     }
 
-    @ExceptionHandler(FlowfitAuthException.class)
-    public ResponseEntity<ErrorResponse> handleFlowfitAuthException(FlowfitAuthException e) {
+    @ExceptionHandler(StdevAuthException.class)
+    public ResponseEntity<ErrorResponse> handleStdevAuthException(StdevAuthException e) {
         ErrorResponse errorResponse = ErrorResponse.of(e.getStatus().value(), "인증관련 에러가 발생했습니다.", e.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
     }

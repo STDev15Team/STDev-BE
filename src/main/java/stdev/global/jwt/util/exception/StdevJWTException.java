@@ -1,11 +1,10 @@
-package stdev.domain.user.infra.exception;
-
+package stdev.global.jwt.util.exception;
 
 import stdev.global.infra.exception.auth.StdevAuthException;
 import org.springframework.http.HttpStatus;
 
-public class InvalidRoleException extends StdevAuthException {
-    public InvalidRoleException(String message) {
+public class StdevJWTException extends StdevAuthException {
+    public StdevJWTException(String message) {
         super(HttpStatus.UNAUTHORIZED, message);
     }
 }

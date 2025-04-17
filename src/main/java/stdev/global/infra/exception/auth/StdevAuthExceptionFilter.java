@@ -17,7 +17,7 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 @Slf4j
-public class FlowfitAuthExceptionFilter extends OncePerRequestFilter {
+public class StdevAuthExceptionFilter extends OncePerRequestFilter {
 
     private final ObjectMapper objectMapper;
 
@@ -27,20 +27,20 @@ public class FlowfitAuthExceptionFilter extends OncePerRequestFilter {
         try {
             filterChain.doFilter(request, response);
         }
-        catch(FlowfitAuthException e) {
-            handleflowfitAuthException(response, e);
+        catch(StdevAuthException e) {
+            handleStdevAuthException(response, e);
         }
         catch(AuthenticationException e) {
             handleAuthenticationException(response);
         }
     }
 
-    private void handleflowfitAuthException(HttpServletResponse response, FlowfitAuthException e) throws IOException {
+    private void handleStdevAuthException(HttpServletResponse response, StdevAuthException e) throws IOException {
         response.setStatus(e.getStatus().value());
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-        ErrorResponse errorResponse = ErrorResponse.of(e.getStatus().value(), "FLOWFIT_AUTH_EXCEPTION", e.getMessage());
+        ErrorResponse errorResponse = ErrorResponse.of(e.getStatus().value(), "Stdev_AUTH_EXCEPTION", e.getMessage());
 
         response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
     }

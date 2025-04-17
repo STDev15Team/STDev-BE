@@ -2,9 +2,9 @@ package stdev.global.config;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import stdev.domain.oauth2.infra.filter.FlowfitJWTFilter;
-import stdev.domain.oauth2.infra.filter.FlowfitLogoutFilter;
-import stdev.global.infra.exception.auth.FlowfitAuthExceptionFilter;
+import stdev.domain.oauth2.infra.filter.StdevJWTFilter;
+import stdev.domain.oauth2.infra.filter.StdevLogoutFilter;
+import stdev.global.infra.exception.auth.StdevAuthExceptionFilter;
 import stdev.global.jwt.domain.repository.JsonWebTokenRepository;
 import stdev.global.jwt.domain.repository.KakaoJsonWebTokenRepository;
 import stdev.global.jwt.util.JWTUtil;
@@ -37,13 +37,14 @@ public class SecurityConfig {
     private final ObjectMapper objectMapper;
     private final JsonWebTokenRepository jsonWebTokenRepository;
     private final KakaoJsonWebTokenRepository KakaoJsonWebTokenRepository;
-    private final List<String> excludedUrls = Arrays.asList("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html","/favicon.ico","/api/reissue", "/api/oauth2/login", "/api/healthcheck", "/api/oauth2/callback");
+    private final List<String> excludedUrls = Arrays.asList("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/favicon.ico", "/api/reissue", "/api/oauth2/login", "/api/healthcheck", "/api/oauth2/callback");
 
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -76,9 +77,9 @@ public class SecurityConfig {
                         .authenticationEntryPoint((request, response, authException) ->
                                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")
                         ))
-                .addFilterAfter(new FlowfitAuthExceptionFilter(objectMapper), CorsFilter.class)
-                .addFilterAfter(new FlowfitJWTFilter(jwtUtil, excludedUrls), UsernamePasswordAuthenticationFilter.class)
-                .addFilterAt(new FlowfitLogoutFilter(jwtUtil, jsonWebTokenRepository, KakaoJsonWebTokenRepository), LogoutFilter.class);
+                .addFilterAfter(new StdevAuthExceptionFilter(objectMapper), CorsFilter.class)
+                .addFilterAfter(new StdevJWTFilter(jwtUtil, excludedUrls), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAt(new StdevLogoutFilter(jwtUtil, jsonWebTokenRepository, KakaoJsonWebTokenRepository), LogoutFilter.class);
 
         return http.build();
     }

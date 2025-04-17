@@ -8,7 +8,7 @@ public record ErrorResponse (
         String cause,
         LocalDateTime time
 ) {
-    public static ErrorResponse of(FlowfitException exception) {
+    public static ErrorResponse of(StDevException exception) {
         return new ErrorResponse(
                 exception.getStatus().value(),
                 exception.getMessage(),

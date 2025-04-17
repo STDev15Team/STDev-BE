@@ -2,11 +2,11 @@ package stdev.global.infra.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class FlowfitException extends RuntimeException {
+public class StDevException extends RuntimeException {
 
     private final HttpStatus status;
 
-    public FlowfitException(HttpStatus status, String message) {
+    public StDevException(HttpStatus status, String message) {
         super(message);
         this.status = status;
     }

@@ -1,9 +1,6 @@
 package stdev.domain.dreamanalysis.application;
 
-import stdev.domain.dreamanalysis.presentation.dto.response.ContentGenerationResponse;
-import stdev.domain.dreamanalysis.presentation.dto.response.DreamCommentResponse;
-import stdev.domain.dreamanalysis.presentation.dto.response.DreamImageResponse;
-import stdev.domain.dreamanalysis.presentation.dto.response.HeadResponse;
+import stdev.domain.dreamanalysis.presentation.dto.response.*;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -16,5 +13,7 @@ public interface OpenAIContentService {
     DreamImageResponse generateImage(String topic);
 
     HeadResponse generateHead(String category);
+
+    ContentResponse getContent(Long id, String userId);
 
 }
