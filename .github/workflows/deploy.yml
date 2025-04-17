@@ -58,19 +58,79 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            mkdir -p /home/ubuntu/flowfit  # 경로가 없으면 만들기
+            mkdir -p /home/ubuntu/flowfit
 
-      # (8.6) docker-compose.yml 파일 EC2로 복사
-      - name: Copy docker-compose.yml to EC2
-        uses: appleboy/scp-action@master
+      # (8.6) 수정된 docker-compose.yml 파일 EC2로 복사
+      - name: Create docker-compose.yml on EC2
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-          source: "docker-compose.yml"
-          target: "/home/ubuntu/flowfit"
+          script: |
+            cat > /home/ubuntu/flowfit/docker-compose.yml << 'EOL'
+            version: '3.8'
 
-      # (8.7) .env 파일 EC2로 복사 (환경 변수 문제 방지)
+            services:
+              app1:
+                image: chltmdgh522/stdev:latest
+                container_name: stdev_app1
+                ports:
+                  - "8081:8080"
+                environment:
+                  - SPRING_PROFILES_ACTIVE=prod
+                  - REDIS_HOST=redis
+                  - REDIS_PORT=6379
+                  - REDIS_PASSWORD=${REDIS_PASSWORD}
+                depends_on:
+                  - redis
+                restart: always
+
+              app2:
+                image: chltmdgh522/stdev:latest
+                container_name: stdev_app2
+                ports:
+                  - "8082:8080"
+                environment:
+                  - SPRING_PROFILES_ACTIVE=prod
+                  - REDIS_HOST=redis
+                  - REDIS_PORT=6379
+                  - REDIS_PASSWORD=${REDIS_PASSWORD}
+                depends_on:
+                  - redis
+                restart: always
+
+              app3:
+                image: chltmdgh522/stdev:latest
+                container_name: stdev_app3
+                ports:
+                  - "8083:8080"
+                environment:
+                  - SPRING_PROFILES_ACTIVE=prod
+                  - REDIS_HOST=redis
+                  - REDIS_PORT=6379
+                  - REDIS_PASSWORD=${REDIS_PASSWORD}
+                depends_on:
+                  - redis
+                restart: always
+
+              redis:
+                image: redis
+                container_name: stdev_redis
+                command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
+                ports:
+                  - "6379:6379"
+                environment:
+                  - REDIS_PASSWORD=${REDIS_PASSWORD}
+                volumes:
+                  - redis_data:/data
+                restart: always
+
+            volumes:
+              redis_data:
+            EOL
+
+      # (8.7) .env 파일 EC2로 복사
       - name: Copy .env file to EC2
         uses: appleboy/scp-action@master
         with:
@@ -80,7 +140,74 @@ jobs:
           source: "env/prod.env"
           target: "/home/ubuntu/flowfit/.env"
 
-      # (9) SSH로 서버 접속 후 컨테이너 실행
+      # (9) Nginx 설정 파일 생성 및 적용
+      - name: Configure Nginx
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            # Nginx 설정 파일 생성
+            sudo cat > /etc/nginx/sites-available/stdev << 'EOL'
+            # 로드 밸런싱 백엔드 설정
+            upstream stdev_backend {
+                least_conn;
+            
+                server 127.0.0.1:8081 max_fails=3 fail_timeout=30s;
+                server 127.0.0.1:8082 max_fails=3 fail_timeout=30s;
+                server 127.0.0.1:8083 max_fails=3 fail_timeout=30s;
+            
+                keepalive 32;
+            }
+
+            # HTTPS 서버 설정
+            server {
+                server_name stdev.stdev.p-e.kr;
+            
+                access_log /var/log/nginx/stdev_access.log;
+                error_log /var/log/nginx/stdev_error.log;
+            
+                location / {
+                    proxy_pass http://stdev_backend;
+                    proxy_http_version 1.1;
+            
+                    proxy_set_header Host $host;
+                    proxy_set_header X-Real-IP $remote_addr;
+                    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                    proxy_set_header X-Forwarded-Proto $scheme;
+            
+                    proxy_connect_timeout 60s;
+                    proxy_send_timeout 60s;
+                    proxy_read_timeout 60s;
+            
+                    proxy_buffers 8 16k;
+                    proxy_buffer_size 32k;
+                }
+            
+                listen 443 ssl;
+                ssl_certificate /etc/letsencrypt/live/stdev.stdev.p-e.kr/fullchain.pem;
+                ssl_certificate_key /etc/letsencrypt/live/stdev.stdev.p-e.kr/privkey.pem;
+                include /etc/letsencrypt/options-ssl-nginx.conf;
+                ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+            }
+
+            # HTTP에서 HTTPS로 리다이렉트
+            server {
+                if ($host = stdev.stdev.p-e.kr) {
+                    return 301 https://$host$request_uri;
+                }
+            
+                listen 80;
+                server_name stdev.stdev.p-e.kr;
+                return 404;
+            }
+            EOL
+            
+            # Nginx 설정 테스트 및 적용
+            sudo nginx -t && sudo systemctl reload nginx
+
+      # (10) SSH로 서버 접속 후 컨테이너 실행
       - name: Deploy to Server
         uses: appleboy/ssh-action@master
         with:
@@ -89,8 +216,26 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             cd /home/ubuntu/flowfit
-            sudo ln -s /usr/bin/docker-compose /usr/local/bin/docker-compose || true  # 심볼릭 링크 생성 (이미 있으면 무시)
-            docker compose down || true  # 기존 컨테이너 종료 (V2 스타일)
+            sudo ln -s /usr/bin/docker-compose /usr/local/bin/docker-compose || true
+            
+            # 기존 컨테이너 중지 및 이미지 정리
+            docker compose down || true
             docker image prune -a -f
+            
+            # 최신 이미지 다운로드 및 컨테이너 시작
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO_NAME }}:latest
-            docker compose up -d  # V2 스타일로 컨테이너 실행
+            docker compose up -d
+            
+            # 컨테이너 상태 확인
+            sleep 10
+            docker ps
+            
+            # 헬스 체크 수행
+            echo "Checking app1 health..."
+            curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8081/api/healthcheck
+            
+            echo "Checking app2 health..."
+            curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8082/api/healthcheck
+            
+            echo "Checking app3 health..."
+            curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8083/api/healthcheck
