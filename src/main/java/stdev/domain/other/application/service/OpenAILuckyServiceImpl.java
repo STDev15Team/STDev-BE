@@ -71,7 +71,7 @@ public class OpenAILuckyServiceImpl implements OpenAILuckyService {
             if (response.getChoices() != null && !response.getChoices().isEmpty()) {
                 String content = response.getChoices().get(0).getMessage().getContent();
                 log.info("Generated text: {}", content.substring(0, Math.min(content.length(), 100)) + "...");
-                return LuckyGenerationResponse.of(content + and + lucky.getComment());
+                return LuckyGenerationResponse.of(content + and + lucky.getComment(), lucky.getLuckyImage());
 
             } else {
                 throw new UserNotFoundException("내용을 생성할 수 없습니다.");
