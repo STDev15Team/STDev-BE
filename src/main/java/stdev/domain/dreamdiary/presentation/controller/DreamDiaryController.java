@@ -28,7 +28,7 @@ public class DreamDiaryController {
     public ResponseEntity<DiaryPostResponse> dreamDiaryPost(@RequestBody DiaryPostRequest req,
                                                             @AuthenticationPrincipal String userId) {
 
-        DiaryPostResponse diaryPostResponse = dreamDiaryService.dreamPost(req, "4207776518");
+        DiaryPostResponse diaryPostResponse = dreamDiaryService.dreamPost(req, userId);
         return ResponseEntity.ok(diaryPostResponse);
     }
 
