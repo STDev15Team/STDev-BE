@@ -174,7 +174,7 @@ public class OpenAIContentServiceImpl implements OpenAIContentService {
 
         return String.format(
                 "Please analyze the following dream: \"%s\".\n" +
-                        "Start your response with **either** '악몽:' or '해몽:' depending on the nature of the dream.\n" +
+                        "Start your response with **either** '잡몽:' or '허몽:' or '영몽:' or '정몽:' or '심몽:' depending on the nature of the dream.\n" +
                         "Then structure your response in this exact format with emojis:\n" +
                         "\n" +
                         "🔍 꿈의 주체: [꿈에서 나온 주요 주체나 대상을 직접 명시, 예: 불, 지각, 시험 등]\n" +

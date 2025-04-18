@@ -23,7 +23,7 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.util.*;
 
-//@Service
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -46,11 +46,13 @@ public class UserServiceImpl implements UserService {
 
         LocalTime start = user.getStartTime();
         LocalTime end = user.getEndTime();
-        if (end.isBefore(start)) {
-            // 다음 날로 넘어감
-            end = end.plusHours(24);
-        }
+
+// Duration 계산 정확히 하기
         Duration duration = Duration.between(start, end);
+        if (duration.isNegative()) {
+            duration = duration.plusHours(24);
+        }
+
         long hours = duration.toHours();
         long minutes = duration.toMinutesPart();
         StringBuilder sb = new StringBuilder();
