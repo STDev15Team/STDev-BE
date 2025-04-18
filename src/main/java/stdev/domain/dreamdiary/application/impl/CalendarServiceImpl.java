@@ -16,11 +16,14 @@ import stdev.domain.user.domain.repository.UserRepository;
 import stdev.domain.user.infra.exception.UserNotFoundException;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 @Transactional
@@ -62,7 +65,54 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     @Override
-    public List<CalendarResponse> getDay(String userId) {
-        return null;
+    public List<CalendarResponse> getWeek(String userId, CalendarRequest req) {
+        LocalDate today = LocalDate.now();
+
+        // 요청한 달이 오늘 달이 아닌 경우 -> 요청 기준의 날짜로 보정
+        if (req.year() != today.getYear() || req.month() != today.getMonthValue()) {
+            today = LocalDate.of(req.year(), req.month(), 1);
+        }
+
+        List<LocalDate> weekDates = getWeekDates(today);
+        LocalDate start = weekDates.get(0);
+        LocalDate end = weekDates.get(6);
+
+        List<DreamDiary> diaries = dreamDiaryRepository.findWeekDreamsByUserId(userId, start, end);
+
+        Map<Integer, DreamDiary> diaryMap = diaries.stream()
+                .collect(Collectors.toMap(
+                        d -> d.getSleepStart().getDayOfMonth(),
+                        d -> d
+                ));
+
+        List<CalendarResponse> responses = new ArrayList<>();
+        for (LocalDate date : weekDates) {
+            DreamDiary d = diaryMap.get(date.getDayOfMonth());
+            if (d != null) {
+
+
+                responses.add(CalendarResponse.of(
+                        date.getDayOfMonth(),
+                        d.getRate(),
+                        Duration.between(d.getSleepStart(), d.getSleepEnd()).toHours(),
+                        d.getId()
+                ));
+            } else {
+                responses.add(CalendarResponse.of(date.getDayOfMonth(), null, null, null));
+            }
+        }
+
+        return responses;
     }
+
+
+    public List<LocalDate> getWeekDates(LocalDate today) {
+        LocalDate sunday = today.minusDays(today.getDayOfWeek().getValue() % 7);
+        return IntStream.range(0, 7)
+                .mapToObj(sunday::plusDays)
+                .toList();
+    }
+
 }
+
+

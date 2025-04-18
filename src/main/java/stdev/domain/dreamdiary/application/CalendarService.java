@@ -9,5 +9,5 @@ public interface CalendarService {
 
     List<CalendarResponse> getMonth(String userId, CalendarRequest req);
 
-    List<CalendarResponse> getDay(String userId);
+    List<CalendarResponse> getWeek(String userId, CalendarRequest req);
 }

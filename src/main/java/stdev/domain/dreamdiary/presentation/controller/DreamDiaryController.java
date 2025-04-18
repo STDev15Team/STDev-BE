@@ -7,6 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import stdev.domain.dreamdiary.application.DreamDiaryService;
+import stdev.domain.dreamdiary.presentation.dto.request.CalendarRequest;
 import stdev.domain.dreamdiary.presentation.dto.request.DiaryPostRequest;
 import stdev.domain.dreamdiary.presentation.dto.response.DiaryGetResponse;
 import stdev.domain.dreamdiary.presentation.dto.response.DiaryPostResponse;
@@ -27,7 +28,7 @@ public class DreamDiaryController {
     public ResponseEntity<DiaryPostResponse> dreamDiaryPost(@RequestBody DiaryPostRequest req,
                                                             @AuthenticationPrincipal String userId) {
 
-        DiaryPostResponse diaryPostResponse = dreamDiaryService.dreamPost(req, userId);
+        DiaryPostResponse diaryPostResponse = dreamDiaryService.dreamPost(req, "4207776518");
         return ResponseEntity.ok(diaryPostResponse);
     }
 
@@ -38,9 +39,9 @@ public class DreamDiaryController {
 
 
     @GetMapping("/sleep/rate")
-    public ResponseEntity<List<SleepRateResponse>> sleepRate(
+    public ResponseEntity<List<SleepRateResponse>> sleepRate(@ModelAttribute CalendarRequest req,
             @AuthenticationPrincipal String userId) {
 
-        return ResponseEntity.ok(dreamDiaryService.sleepRate(userId));
+        return ResponseEntity.ok(dreamDiaryService.sleepRate(userId, req));
     }
 }

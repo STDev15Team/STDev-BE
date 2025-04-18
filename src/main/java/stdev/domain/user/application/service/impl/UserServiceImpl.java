@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
         LocalTime start = user.getStartTime();
         LocalTime end = user.getEndTime();
 
-// Duration 계산 정확히 하기
+        // Duration 계산 정확히 하기
         Duration duration = Duration.between(start, end);
         if (duration.isNegative()) {
             duration = duration.plusHours(24);

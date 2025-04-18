@@ -23,10 +23,15 @@ import java.util.List;
 public class CalendarController {
 
     private final CalendarService calendarService;
+
     @GetMapping("/month")
     public ResponseEntity<List<CalendarResponse>> monthGet(@ModelAttribute CalendarRequest req, @AuthenticationPrincipal String userId) {
-        return ResponseEntity.ok(calendarService.getMonth(userId,req));
+        return ResponseEntity.ok(calendarService.getMonth(userId, req));
     }
 
 
+    @GetMapping("/week")
+    public ResponseEntity<List<CalendarResponse>> weekGet(@ModelAttribute CalendarRequest req, @AuthenticationPrincipal String userId) {
+        return ResponseEntity.ok(calendarService.getWeek(userId, req));
+    }
 }

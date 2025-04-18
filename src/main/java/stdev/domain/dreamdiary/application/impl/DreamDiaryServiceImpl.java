@@ -12,7 +12,9 @@ import stdev.domain.dreamdiary.domain.entity.DreamDiary;
 import stdev.domain.dreamdiary.domain.repository.DiaryCategoryRepository;
 import stdev.domain.dreamdiary.domain.repository.DreamDiaryRepository;
 import stdev.domain.dreamdiary.infra.exception.InfromationDiaryException;
+import stdev.domain.dreamdiary.presentation.dto.request.CalendarRequest;
 import stdev.domain.dreamdiary.presentation.dto.request.DiaryPostRequest;
+import stdev.domain.dreamdiary.presentation.dto.response.CalendarResponse;
 import stdev.domain.dreamdiary.presentation.dto.response.DiaryGetResponse;
 import stdev.domain.dreamdiary.presentation.dto.response.DiaryPostResponse;
 import stdev.domain.dreamdiary.presentation.dto.response.SleepRateResponse;
@@ -22,6 +24,7 @@ import stdev.domain.user.domain.entity.User;
 import stdev.domain.user.domain.repository.UserRepository;
 import stdev.domain.user.infra.exception.UserNotFoundException;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
@@ -145,36 +148,71 @@ public class DreamDiaryServiceImpl implements DreamDiaryService {
         if (dreamAnalysis == null) {
             flag = false;
         }
-        return DiaryGetResponse.of(dreamDiary.getId(), dreamDiary.getSleepStart(), dreamDiary.getSleepEnd(), dreamDiary.getNote()
-                , dreamDiary.getRate(), dreamDiary.getTitle(), dreamDiary.getContent(), dreamDiary.getDiaryCategory(), flag);
+        // Duration 계산 정확히 하기
+        Duration duration = Duration.between(dreamDiary.getSleepStart(), dreamDiary.getSleepEnd());
+        if (duration.isNegative()) {
+            duration = duration.plusHours(24);
+        }
+
+        long hours = duration.toHours();
+        long minutes = duration.toMinutesPart();
+        StringBuilder sb = new StringBuilder();
+        if (minutes == 0) {
+            sb.append(hours).append("시간");
+        } else {
+            sb.append(hours).append("시간").append(" ").append(minutes).append("분");
+
+        }
+
+
+        return DiaryGetResponse.of(dreamDiary.getId(), dreamDiary.getSleepStart().toLocalTime(), dreamDiary.getSleepEnd().toLocalTime(), dreamDiary.getNote()
+                , dreamDiary.getRate(), dreamDiary.getTitle(), dreamDiary.getContent(), dreamDiary.getDiaryCategory(), sb.toString(), flag);
     }
 
     @Override
-    public List<SleepRateResponse> sleepRate(String userId) {
+    public List<SleepRateResponse> sleepRate(String userId, CalendarRequest req) {
 
-        // 오늘 ~ 6일 전까지 날짜 리스트 만들기
-        List<LocalDate> last7Days = IntStream.rangeClosed(0, 6)
-                .mapToObj(i -> LocalDate.now().minusDays(6 - i))
-                .collect(Collectors.toList());
+        LocalDate today = LocalDate.now();
 
-        // 가져온 데이터 Map<날짜, DreamDiary>
-        List<DreamDiary> diaries = dreamDiaryRepository.findLast7DaysDreamsByUserId(userId);
-        Map<LocalDate, DreamDiary> diaryMap = diaries.stream()
-                .collect(Collectors.toMap(
-                        d -> d.getSleepStart().toLocalDate(),
-                        Function.identity()
-                ));
-
-        // 응답 리스트 생성
-        List<SleepRateResponse> result = new ArrayList<>();
-        for (LocalDate date : last7Days) {
-            String day = date.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN); // 요일 ex. "수"
-            DreamDiary diary = diaryMap.get(date);
-            String rate = (diary != null) ? diary.getRate() : "0";
-
-            result.add(SleepRateResponse.of(day, rate));
+        // 요청한 달이 오늘 달이 아닌 경우 -> 요청 기준의 날짜로 보정
+        if (req.year() != today.getYear() || req.month() != today.getMonthValue()) {
+            today = LocalDate.of(req.year(), req.month(), 1);
         }
 
-        return result;
+        List<LocalDate> weekDates = getWeekDates(today);
+        LocalDate start = weekDates.get(0);
+        LocalDate end = weekDates.get(6);
+
+        List<DreamDiary> diaries = dreamDiaryRepository.findWeekDreamsByUserId(userId, start, end);
+
+        Map<Integer, DreamDiary> diaryMap = diaries.stream()
+                .collect(Collectors.toMap(
+                        d -> d.getSleepStart().getDayOfMonth(),
+                        d -> d
+                ));
+
+        List<SleepRateResponse> responses = new ArrayList<>();
+        for (LocalDate date : weekDates) {
+            DreamDiary d = diaryMap.get(date.getDayOfMonth());
+            if (d != null) {
+
+
+                responses.add(SleepRateResponse.of(
+                        String.valueOf(date.getDayOfMonth()),
+                        d.getRate()
+                ));
+            } else {
+                responses.add(SleepRateResponse.of(String.valueOf(date.getDayOfMonth()), null));
+            }
+        }
+
+        return responses;
+    }
+
+    public List<LocalDate> getWeekDates(LocalDate today) {
+        LocalDate sunday = today.minusDays(today.getDayOfWeek().getValue() % 7);
+        return IntStream.range(0, 7)
+                .mapToObj(sunday::plusDays)
+                .toList();
     }
 }

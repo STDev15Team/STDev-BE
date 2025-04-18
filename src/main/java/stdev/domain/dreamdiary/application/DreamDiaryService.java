@@ -1,6 +1,7 @@
 package stdev.domain.dreamdiary.application;
 
 import org.springframework.stereotype.Repository;
+import stdev.domain.dreamdiary.presentation.dto.request.CalendarRequest;
 import stdev.domain.dreamdiary.presentation.dto.request.DiaryPostRequest;
 import stdev.domain.dreamdiary.presentation.dto.response.DiaryGetResponse;
 import stdev.domain.dreamdiary.presentation.dto.response.DiaryPostResponse;
@@ -13,5 +14,5 @@ public interface DreamDiaryService {
 
     DiaryGetResponse dreamGet(Long id);
 
-    List<SleepRateResponse> sleepRate(String userId);
+    List<SleepRateResponse> sleepRate(String userId, CalendarRequest req);
 }

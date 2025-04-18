@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import stdev.domain.dreamdiary.domain.entity.DreamDiary;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,5 +47,20 @@ public interface DreamDiaryRepository extends JpaRepository<DreamDiary, Long> {
     List<DreamDiary> findBySleepStartYearAndMonthAndDay(@Param("year") int year,
                                                         @Param("month") int month,
                                                         @Param("day") int day);
+
+
+    @Query("""
+    SELECT d FROM DreamDiary d
+    JOIN d.record r
+    JOIN r.user u
+    WHERE u.id = :userId
+    AND DATE(d.sleepStart) BETWEEN :startDate AND :endDate
+""")
+    List<DreamDiary> findWeekDreamsByUserId(
+            @Param("userId") String userId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
+    );
+
 
 }
