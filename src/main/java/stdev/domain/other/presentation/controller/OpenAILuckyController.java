@@ -20,7 +20,7 @@ public class OpenAILuckyController {
 
     private final OpenAILuckyService openAILuckyService;
     @PostMapping("/lucky")
-    public ResponseEntity<LuckyGenerationResponse> generateContent(@RequestBody LuckyGenerationRequest request) {
-        return ResponseEntity.ok(openAILuckyService.generateLucky(request.topic()));
+    public ResponseEntity<LuckyGenerationResponse> generateContent(@RequestBody LuckyGenerationRequest req) {
+        return ResponseEntity.ok(openAILuckyService.generateLucky(req));
     }
 }
